@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: nuansapos-be
+    runtime: php
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        sync: false # Anda harus mengisi ini manual di dashboard Render
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_URL
+        sync: false # Masukkan URL Database Supabase di dashboard Render
+      - key: CLOUDINARY_URL
+        sync: false # Masukkan URL Cloudinary di dashboard Render
+      - key: FRONTEND_URL
+        value: http://localhost:3000 # Nanti ganti dengan URL Vercel
