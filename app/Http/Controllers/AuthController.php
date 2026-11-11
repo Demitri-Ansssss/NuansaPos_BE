@@ -8,31 +8,59 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    // public function register(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|string|email|max:255|unique:users',
+    //         'password' => 'required|string|min:8|confirmed',
+    //         'role' => 'required|string|in:owner,admin,cashier',
+    //         'shop_id' => 'required|exists:shops,id',
+    //     ]);
+
+    //     $user = User::create([
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'password' => bcrypt($request->password),
+    //         'role' => $request->role,
+    //         'shop_id' => $request->shop_id,
+    //     ]);
+
+    //     $token = $user->createToken('auth_token')->plainTextToken;
+
+    //     return response()->json([
+    //         'token' => $token,
+    //         'token_type' => 'Bearer',
+    //         'user' => $user,
+    //     ]);
+    // }
     public function register(Request $request)
     {
         $request->validate([
+            'shop_name' => 'required|string|max:255', // Input baru
+            'shop_address' => 'required|string|max:255', // Input baru
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|string|in:owner,admin,cashier',
-            'shop_id' => 'required|exists:shops,id',
         ]);
-
+        // 1. Buat Toko Terlebih Dahulu
+        $shop = \App\Models\Shop::create([
+            'name' => $request->shop_name,
+            'address' => $request->shop_address,
+        ]);
+        // 2. Buat User dan hubungkan ke shop_id yang baru dibuat
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'role' => $request->role,
-            'shop_id' => $request->shop_id,
+            'role' => 'owner',
+            'shop_id' => $shop->id,
         ]);
-
         $token = $user->createToken('auth_token')->plainTextToken;
-
         return response()->json([
             'token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user,
-        ]);
+            'user' => $user->load('shop'),
+        ], 201);
     }
 
     public function login(Request $request)
@@ -55,7 +83,7 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user,
+            'user' => $user->load('shop'),
         ]);
     }
     }

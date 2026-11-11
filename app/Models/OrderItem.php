@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\BelongsToShop;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
-    use BelongsToShop;
 
-    protected $fillable = ['shop_id', 'order_id', 'product_id', 'quantity', 'price', 'subtotal', 'notes'];
+    protected $fillable = ['order_id', 'product_id', 'quantity', 'price', 'subtotal', 'notes'];
 
     public function order()
     {

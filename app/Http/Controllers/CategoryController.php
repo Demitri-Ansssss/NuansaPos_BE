@@ -18,6 +18,18 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
+        if (!auth()->check()) {
+            $shop = \App\Models\Shop::first();
+            if (!$shop) {
+                // Buat shop default jika belum ada (untuk testing)
+                $shop = \App\Models\Shop::create([
+                    'name' => 'Toko Nuansa',
+                    'address' => 'Alamat Default',
+                ]);
+            }
+            $validated['shop_id'] = $shop->id;
+        }
+
         $category = Category::create($validated);
         return response()->json($category, 201);
     }

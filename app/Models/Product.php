@@ -9,7 +9,7 @@ class Product extends Model
 {
     use BelongsToShop;
 
-    protected $fillable = ['shop_id', 'category_id', 'name', 'description', 'price', 'stock', 'image'];
+    protected $fillable = ['shop_id', 'category_id', 'name', 'description', 'price', 'stock', 'unit', 'image', 'sku'];
 
     protected $appends = ['image_url'];
 
